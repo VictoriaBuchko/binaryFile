@@ -139,20 +139,6 @@ public:
 	operator double() {
 		return double(Numerator) / double(Denominator);
 	}
-
-	friend ostream& operator<<(ostream& os, const Fraction& fraction) {
-		os.write((char*)&fraction.Numerator, sizeof(fraction.Numerator));
-		os.write((char*)&fraction.Denominator, sizeof(fraction.Denominator));
-		return os;
-	}
-
-	friend istream& operator>>(istream& is, Fraction& fraction) {
-		is.read((char*)&fraction.Numerator, sizeof(fraction.Numerator));
-		is.read((char*)&fraction.Denominator, sizeof(fraction.Denominator));
-		return is;
-	}
-
-
 };
 
 void printResult(const Fraction& result) {
@@ -189,7 +175,7 @@ int main()
 		exit(1);
 	}
 	for (const Fraction& fraction : fractions) {
-		Fractions << fraction;
+		Fractions.write((char*)&fraction, sizeof(Fraction));
 	}
 	Fractions.close();
 
@@ -202,7 +188,7 @@ int main()
 	}
 
 	for (int i = 0; i < 4; ++i) {
-		Fraction2 >> fractions2[i];
+		Fraction2.read((char*)&fractions2[i], sizeof(Fraction));
 	}
 
 	for (const Fraction& fraction : fractions2) {
@@ -216,7 +202,7 @@ int main()
 
 	Fraction2.seekg(-2 * sizeof(Fraction), ios::end);//-2*8=-16 байт от конца
 	Fraction fraction;
-	Fraction2 >> fraction;
+	Fraction2.read((char* ) &fraction, sizeof(Fraction));
 	cout << "Numerator: " << fraction.GetNumerator() << ", Denominator: " << fraction.GetDenominator() << endl;
 
 	Fraction2.close();
